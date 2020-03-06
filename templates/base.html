@@ -1,0 +1,145 @@
+{% load staticfiles %}
+{% load blog_tags %}
+{% load notifications_tags %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <base target="_self">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static '/css/highlights/github.css' %}">
+    <link rel="stylesheet" href="{% static '/css/highlights/github.css' %}">
+    <link rel="stylesheet" href="{% static '/css/font-awesome.min.css' %}">
+    <script type="text/javascript" src="{% static '/jquery.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/base.css' %}">
+    <link rel="stylesheet" href="{% static '/bootstrap3.3.7/css/bootstrap.min.css' %}">
+    <script type="text/javascript" src="{% static '/bootstrap3.3.7/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+    {% block meta %}{% endblock %}
+</head>
+
+<body lang="zh-CN">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'blog:index' %}">MyBLOG</a>
+        </div>
+
+        <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                {% get_meanList as means %}
+                {# 默认菜单栏 #}
+                <li><a href="{% url 'blog:index' %}"><i class="menu-item-icon fa fa-fw fa-home"></i>首页</a></li>
+                <li><a href="{% url 'blog:categories' %}"><i class="menu-item-icon fa fa fa-th"></i>分类</a></li>
+                <li><a href="{% url 'book:books' %}"><i class="menu-item-icon fa fa fa-book"></i>书单</a></li>
+                <li><a href="{% url 'movie:movies' %}"><i class="menu-item-icon fa fa fa-film"></i>影单</a></li>
+
+                {# 自定义菜单栏 #}
+                {% for mean in means %}
+                    {% if mean.status == 'y' %}
+                        <li><a href="{% url 'blog:index' %}{{ mean.link }}"><i
+                                class="menu-item-icon fa {{ mean.icon }}"></i>{{ mean.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <!-- 如果没有登陆 显示登陆按钮 -->
+                {% if user.is_authenticated %}
+                    <li class="">
+                        {% notifications_unread as unread_count %}
+                        <!-- notifications_unread 是notifications_tags中用于统计通知数量的方法 -->
+                        <a href="{% url 'other:my_notifications' %}"><i class="fa fa-bell" aria-hidden="true"></i>
+                            {% if unread_count %} <span class="badge">{{ unread_count }}</span>{% endif %}</a>
+                    </li>
+                {% else %}
+                    <li class="">
+                        <a href="{% url 'user:login' %}?from={{ request.get_full_path }}">登录/注册</a>
+                    </li>
+                {% endif %}
+                <li class="navbar-search ">
+                    <form action="{% url 'haystack_search' %}" class="navbar-form navbar-right">
+                        <input type="search" name="q" placeholder="搜索..." autocomplete="off" class="form-control"/>
+                        <button type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9 col-xs-12">
+
+                {% block content_left %}{% endblock %}
+
+                {% block content_paginate %}{% endblock %}
+
+                {% block content_comment %}{% endblock %}
+
+            </div>
+
+            <div class="col-md-3 col-xs-12">
+                {% block content_right %}
+                    <div class="content-sidebar">
+                        {% block sidebar %}
+                            {% block toc_sidebar %}{% endblock %}
+
+                            {% block category_sidebar %}
+                                <div class="sidebar">
+                                    <div class="title"><h3>文章分类</h3></div>
+                                    <div class="git_tags">
+                                        {% get_category as categories %}
+                                        {% for category in categories %}
+                                            <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endblock %}
+
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottom %}
+    <div class="footer">
+        <div class="container">
+            <div class="col-sm-4">
+                <div class="content">
+                    <h4 class="title">二维码</h4>
+                    <img src="{% static '/image/QR.jpg' %}" style="width: 100px; height: 100px">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="content">
+                    <h4 class="title">联系站长</h4>
+                    {% get_social_media as social_media %}
+                    <p>{{ social_media.wechat }}</p>
+                    <p>{{ social_media.email }}</p>
+                    <p>{{ social_media.github }}</p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="content">
+                    <h4 class="title">友情链接</h4>
+                    {% get_friend_links as links %}
+                    {% for link in links %}
+                        <p><a href="{{ link.link }}" target="_blank">{{ link.name }}</a></p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block script_extends %} {% endblock %}
+
+</body>
+</html>
