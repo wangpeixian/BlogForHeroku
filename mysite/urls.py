@@ -27,10 +27,10 @@ urlpatterns = [
     path("", include('apps.blog.urls')),
 
     # 图书
-    path("", include("apps.book.urls")),
+    # path("", include("apps.book.urls")),
 
     # 电影
-    path("", include("apps.movie.urls")),
+    # path("", include("apps.movie.urls")),
 
     # 用户
     path("", include("apps.user.urls")),

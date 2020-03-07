@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import sys
@@ -35,7 +34,6 @@ ALLOWED_HOSTS = []
 
 # app 目录
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,8 +43,8 @@ INSTALLED_APPS = [
 
     # 新建app
     "apps.blog",
-    "apps.book",
-    "apps.movie",
+    # "apps.book",
+    # "apps.movie",
     "apps.user",
     "apps.other",
 
@@ -66,10 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -131,23 +126,15 @@ CKEDITOR_CONFIGS = {
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': "mysite",
-#         "USER": "root",
-#         "PASSWORD": "root",
-#         "HOST": "127.0.0.1",
-#     }
-# }
 DATABASES = {
-    "default": {
-        "ENGINE" : "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3")
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': "mysite",
+        "USER": "root",
+        "PASSWORD": "root",
+        "HOST": "127.0.0.1",
     }
 }
-
-
 
 # 使用whoosh搜索引擎
 HAYSTACK_CONNECTIONS = {
@@ -220,6 +207,3 @@ BOOK_MOVIE_PAGINATE_BY = 8
 
 # 搜索结果分页
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 7
-
-
-django_heroku.settings(locals())
