@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 
 # app 目录
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
